@@ -4,18 +4,20 @@ namespace App\Service;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\LogRequest as LogRequestEntity;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Request;
 
 class LogRequest
 {
     protected $container;
     protected $em;
+    protected $geolocationKey;
+    protected $geolocationUrl;
 
-    public function __construct(ContainerInterface $container, EntityManagerInterface $manager)
+    public function __construct(ContainerInterface $container, EntityManagerInterface $manager, $geolocationKey, $geolocationUrl)
     {
         $this->container = $container;
         $this->em = $manager;
+        $this->geolocationKey = $geolocationKey;
+        $this->geolocationUrl = $geolocationUrl;
     }
 
     public function processRequest($isError = false)
@@ -26,6 +28,9 @@ class LogRequest
         {
             $action = '';
             $method = '';
+            $geoData = [];
+            $city = '';
+            $country = '';
 
             if($isError)
             {
@@ -45,11 +50,24 @@ class LogRequest
                 }
             }
 
+            if(in_array($request->getClientIp(), ['127.0.0.1', 'localhost']))
+            {
+                $geoData = json_decode(file_get_contents(sprintf($this->geolocationUrl, '95.133.244.196', $this->geolocationKey)), true);
+            } else
+            {
+                $geoData = json_decode(file_get_contents(sprintf($this->geolocationUrl, $request->getClientIp(), $this->geolocationKey)), true);
+            }
+
+            if($geoData)
+            {
+                $city = $geoData['city'];
+                $country = $geoData['country_name'];
+            }
 
             $obEntity = new LogRequestEntity();
             $obEntity->setAction($action)
-                ->setCity('')
-                ->setCountry('')
+                ->setCity($city)
+                ->setCountry($country)
                 ->setData((string)$request)
                 ->setIp($request->getClientIp())
                 ->setMethod($method)

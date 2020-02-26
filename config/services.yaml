@@ -34,5 +34,9 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
 
-    #App\Service\LogRequest:
-        #arguments: ["@doctrine.orm.entity_manager"]
+    App\Service\LogRequest:
+        arguments:
+            - '@Symfony\Component\DependencyInjection\ContainerInterface'
+            - '@doctrine.orm.entity_manager'
+            - '%env(GEOLOCATION_API_KEY)%'
+            - '%env(GEOLOCATION_URL)%'
