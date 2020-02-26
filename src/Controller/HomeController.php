@@ -1,16 +1,20 @@
 <?php
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class HomeController
+class HomeController extends BaseController
 {
     /**
         * @Route("/")
     */
     public function index()
     {
-        return new Response('<p>Hello world!</p>');
+        $this->data['headingTitle'] = 'Project homepage';
+        $this->data['copyrightYear'] = date('Y');
+        $this->data['buttonSignIn'] = 'Sign In';
+        $this->data['actionSignIn'] = '/log';
+
+        return $this->render('home.html.twig', $this->data);
     }
 }

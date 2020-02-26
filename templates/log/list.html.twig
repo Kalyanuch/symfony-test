@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}<body class="bg-light">{% endblock %}
+
+{% block content %}
+<main role="main">
+    <h2>{{ headingTitle }}</h2>
+    {% if items %}
+    <div class="table-responsive">
+        <table class="table table-striped table-sm">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>{{ columnAction }}</th>
+                <th>{{ columnMethod }}</th>
+                <th>{{ columnIp }}</th>
+                <th>{{ columnCity }}</th>
+                <th>{{ columnCountry }}</th>
+                <th>{{ columnType }}</th>
+                <th>{{ columnData }}</th>
+                <th>{{ columnActions }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1,001</td>
+                <td>Lorem</td>
+                <td>ipsum</td>
+                <td>dolor</td>
+                <td>sit</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>1,002</td>
+                <td>amet</td>
+                <td>consectetur</td>
+                <td>adipiscing</td>
+                <td>elit</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>1,003</td>
+                <td>Integer</td>
+                <td>nec</td>
+                <td>odio</td>
+                <td>Praesent</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p class="text-center"><span class="badge badge-warning">{{ textEmpty }}</span></p>
+    {% endif %}
+</main>
+{% endblock %}
