@@ -22,39 +22,23 @@
             </tr>
             </thead>
             <tbody>
+            {% for item in items %}
             <tr>
-                <td>1,001</td>
-                <td>Lorem</td>
-                <td>ipsum</td>
-                <td>dolor</td>
-                <td>sit</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{ item.id }}</td>
+                <td>{{ item.action }}</td>
+                <td>{{ item.method }}</td>
+                <td>{{ item.ip }}</td>
+                <td>{{ item.city }}</td>
+                <td>{{ item.country }}</td>
+                <td>{{ item.type }}</td>
+                <td><span title="{{ item.fullData }}">{{ item.data }}</span></td>
+                <td>
+                    {% for action in item.actions %}
+                    <a href="{{ action.href }}" title="{{ action.title }}"><i class="fa {{ action.icon }}" aria-hidden="true"></i></a>
+                    {% endfor %}
+                </td>
             </tr>
-            <tr>
-                <td>1,002</td>
-                <td>amet</td>
-                <td>consectetur</td>
-                <td>adipiscing</td>
-                <td>elit</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>1,003</td>
-                <td>Integer</td>
-                <td>nec</td>
-                <td>odio</td>
-                <td>Praesent</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>
