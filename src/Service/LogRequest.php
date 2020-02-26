@@ -2,33 +2,61 @@
 namespace App\Service;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-#use Symfony\Component\HttpFoundation\Request;
-#use Symfony\Component\HttpKernel\Controller\ControllerResolver;
-#use Symfony\Component\Routing\Router;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\LogRequest as LogRequestEntity;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Request;
 
 class LogRequest
 {
     protected $container;
+    protected $em;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, EntityManagerInterface $manager)
     {
         $this->container = $container;
+        $this->em = $manager;
     }
 
-    public function processRequest()
+    public function processRequest($isError = false)
     {
+        $request = $this->container->get('request_stack')->getCurrentRequest();
 
-        #echo '<pre>';print_r($this->container);exit;
-        #$request = Request::createFromGlobals();
-        #$router = new Router();
-        #$resolver = new ControllerResolver();
-        //$resolver->getController()
+        if(in_array($request->getMethod(), ['GET', 'POST']))
+        {
+            $action = '';
+            $method = '';
 
-        #print_r($request->attributes);exit;
+            if($isError)
+            {
+                $action = 'index';
+                $method = 'ExceptionController';
+            } else
+            {
+                $arController = explode('\\', $request->attributes->get('_controller'));
 
-        //$router = $this->container->get('router');
-        //echo '<pre>';print_r($router->getRouteCollection());exit;
-        $request = $this->container->get('request_stack');
-        #print_r($request->getCUrrentRequest()->attributes);exit;
+                if(is_array($arController) && count($arController))
+                    $arController = explode('::', array_pop($arController));
+
+                if(is_array($arController) && count($arController))
+                {
+                    $method = $arController[0];
+                    $action = $arController[1];
+                }
+            }
+
+
+            $obEntity = new LogRequestEntity();
+            $obEntity->setAction($action)
+                ->setCity('')
+                ->setCountry('')
+                ->setData((string)$request)
+                ->setIp($request->getClientIp())
+                ->setMethod($method)
+                ->setType($request->getMethod());
+
+            $this->em->persist($obEntity);
+            $this->em->flush();
+        }
     }
 }

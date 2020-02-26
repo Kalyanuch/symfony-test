@@ -15,6 +15,6 @@ class ExceptionListener
 
     public function onKernelException(ExceptionEvent $event)
     {
-        $this->service->processRequest();
+        $this->service->processRequest(true);
     }
 }
